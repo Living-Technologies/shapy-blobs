@@ -29,6 +29,11 @@ def main( fit_file, regions=[] ):
 
     if len(regions)==0:
         regions = [ fits.shape[0] ]
+    else:
+        t0 = 0
+        for tr in regions:
+            plotMagnitude( fits[t0:t0 + tr] )
+            t0 += tr
 
 
     n, m = (4, 4)

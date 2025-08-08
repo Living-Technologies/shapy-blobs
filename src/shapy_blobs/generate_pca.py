@@ -6,14 +6,14 @@ from matplotlib import pyplot
 import ngff_zarr
 from shapy_blobs import SHAPE_KEY, MEAN_KEY
 
-def pcaData(data, n_components=256):
+def pcaData(data, n_components):
     pca  = sklearn.decomposition.PCA(n_components=n_components)
     pca = pca.fit(data)
     return pca
 
-if __name__=="__main__":
+def main( image_pths, output_name = "pca_shape_mean.npz", n_components=256 ):
     lin = None
-    for img_pth in sys.argv[1:]:
+    for img_pth in image_pths:
         img = ngff_zarr.from_ngff_zarr(img_pth).images[0]
         data = img.data
         n = 1
@@ -26,12 +26,16 @@ if __name__=="__main__":
         else:
             lin = numpy.concatenate( (lin, rs), axis=0 )
 
-    shape_pca = pcaData( lin )
+    shape_pca = pcaData( lin, n_components )
 
     shape_ave = shape_pca.mean_
     shape_comps = shape_pca.components_
     data = {SHAPE_KEY : shape_comps, MEAN_KEY : shape_ave}
-    fname = "pca_shape_mean.npz"
-    print("saving to %s"%fname)
-    numpy.savez( fname, **data )
+
+    print("saving to %s"%output_name)
+
+    numpy.savez( output_name, **data )
+
+if __name__=="__main__":
+    generatePca(sys.argv[1:])
 

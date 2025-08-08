@@ -4,7 +4,7 @@ import sys, pathlib
 import numpy
 import ngff_zarr
 
-from shapy_blobs import SHAPE_KEY, MEAN_KEY
+from shapy_blobs import getPCA
 
 class PartialPCA:
     def __init__(self, mean, shape):
@@ -12,6 +12,9 @@ class PartialPCA:
         self.shape = shape
     def fit(self, data):
         """
+            Fits the provided data.
+
+            TODO vectorize the calculation. This is incredibly slow.
 
         """
         delta = data - self.mean
@@ -22,13 +25,12 @@ class PartialPCA:
             y[:, i] = dots
         return y
 
-def getPCA(pth):
-    opened = numpy.load(pth)
-    mean = opened[MEAN_KEY]
-    shape = opened[SHAPE_KEY]
-    return mean, shape
 
-def main( shape_path, image_path , output_path="part_fit.npz"):
+def main( shape_path, image_path , output_path="partialfit_fit.npz"):
+    """
+        Loads pca data and the image data as a zarr. Fits the data
+    and then saves the resulting fit.
+    """
     mean, shape = getPCA( shape_path )
     print("fitting mean %s with components %s"%( mean.shape, shape.shape) )
 
