@@ -1,0 +1,26 @@
+[project]
+name = "shapy-blobs"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Matt", email = "m.b.smith-5@umcutrecht.nl" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "click>=8.2.1",
+    "matplotlib>=3.10.5",
+    "ngff-zarr>=0.16.1",
+    "numpy>=2.3.2",
+    "pyqt6>=6.9.1",
+    "scikit-image>=0.25.2",
+    "scikit-learn>=1.7.1",
+    "scipy>=1.16.1",
+]
+
+[project.scripts]
+shapy-blobs = "shapy_blobs:main"
+
+[build-system]
+requires = ["uv_build>=0.8.4,<0.9.0"]
+build-backend = "uv_build"
