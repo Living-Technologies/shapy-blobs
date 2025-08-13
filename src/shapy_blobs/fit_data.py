@@ -19,12 +19,12 @@ class PartialPCA:
         """
         delta = data - self.mean
 
-        y = numpy.zeros( (data.shape[0], self.shape.shape[0]) )
-        for i, comp in enumerate(self.shape):
-            dots = numpy.sum(comp*delta, axis=1)
-            y[:, i] = dots
-        return y
 
+        y1  = numpy.sum(
+            numpy.reshape(delta, (delta.shape[0], 1, delta.shape[1]))*self.shape, axis=2
+            )
+
+        return y1
 
 def main( shape_path, image_path , output_path="partialfit_fit.npz"):
     """
@@ -36,7 +36,7 @@ def main( shape_path, image_path , output_path="partialfit_fit.npz"):
 
     img = ngff_zarr.from_ngff_zarr(image_path).images[0]
 
-    data = img.data
+    data = img.data[0:128]
     print(" to transform %s"%( data.shape,  ) )
     n = 1
     for s in data.shape[1:]:
