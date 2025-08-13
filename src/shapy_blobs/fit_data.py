@@ -36,7 +36,7 @@ def main( shape_path, image_path , output_path="partialfit_fit.npz"):
 
     img = ngff_zarr.from_ngff_zarr(image_path).images[0]
 
-    data = img.data[0:128]
+    data = img.data
     print(" to transform %s"%( data.shape,  ) )
     n = 1
     for s in data.shape[1:]:
