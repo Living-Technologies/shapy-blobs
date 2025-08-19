@@ -7,6 +7,8 @@ def getPCA(pth):
     """
        Loads a .npz file which should contain to arrays saved with
         the package described keys.
+
+        return mean, shapes
     """
     opened = numpy.load(pth)
     mean = opened[MEAN_KEY]

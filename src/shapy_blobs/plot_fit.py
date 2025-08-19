@@ -47,7 +47,7 @@ def main( fit_file, regions=[] ):
         for tr in regions:
             print(t0, tr)
             x, y = getHistogram(fits[t0:t0+tr, i])
-            axis.plot(x, y, ".", label="%s : %s, %s"%(i+1, t0, tr))
+            axis.plot(x, y, ".", label="%s : %s, %s"%(i+1, t0, t0+tr))
             t0 += tr
             axis.legend()
     pyplot.show()
