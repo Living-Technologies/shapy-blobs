@@ -42,12 +42,12 @@ def plot_fit( fit_file, regions):
     from . import plot_fit
     plot_fit.main(fit_file, regions)
 
-@greeting.command('show-components')
+@greeting.command('component-images')
 @click.argument('pca_file', nargs=1, type=click.Path())
-@click.option('--output_file', type=click.Path(), default="pca_modes.tif" )
+@click.option('--output_file', type=click.Path(), default="pca_modes.zarr" )
 @click.option('--n_components', type = int, default = 20 )
 @click.option('--magnitude', type=float, default = 10, help="magnitude of variation")
-def show_components( pca_file, output_file, n_components, magnitude):
+def component_images( pca_file, output_file, n_components, magnitude):
     """
         Generates an image from the first n components found in the npz PCA_FILE.
     """
