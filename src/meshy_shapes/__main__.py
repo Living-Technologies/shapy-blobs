@@ -15,7 +15,7 @@ def pca_meshes( mesh_files, output, components):
 
     """
     from . import pca_meshes
-    pca_meshes.main(mesh_files, output_name, n_components=components)
+    pca_meshes.main(mesh_files, output, n_components=components)
 
 @greeting.command('fit-meshes')
 @click.argument('pca_file', nargs=1, type = click.Path())
@@ -28,7 +28,7 @@ def fit_meshes( pca_file, mesh_file, output, components):
 
     """
     from . import pca_meshes
-    pca_meshes.fitPca(pca_file, mesh_file, output_name, components)
+    pca_meshes.fitPca(pca_file, mesh_file, output, components)
 
 @greeting.command('save-modes')
 @click.argument('pca_file', nargs=1, type = click.Path())

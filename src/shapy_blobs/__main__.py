@@ -10,15 +10,15 @@ def greeting():
 
 @greeting.command('generate-pca')
 @click.argument('image_files', nargs=-1, type = click.Path())
-@click.option('--output_name', default="pca_shape_mean.npz", type = click.Path(), help="name of resulting npz file")
+@click.option('--output', default="pca_shape_mean.npz", type = click.Path(), help="name of resulting npz file")
 @click.option('--components', default = 256, help = "number of components saved", type = int)
-def generate_pca( image_files, output_name, components):
+def generate_pca( image_files, output, components):
     """
         Loads IMAGE_FILES as zarr folders and performs a PCA on them.
 
     """
     from . import generate_pca
-    generate_pca.main(image_files, output_name, n_components=components)
+    generate_pca.main(image_files, output, n_components=components)
 
 @greeting.command('fit-data')
 @click.argument('component_file', nargs=1, type=click.Path())
