@@ -4,7 +4,7 @@ import sys, pathlib
 import numpy
 import ngff_zarr
 
-from shapy_blobs import getPCA
+from shapy_blobs.utils import getPCA
 
 class PartialPCA:
     def __init__(self, mean, shape):
@@ -19,14 +19,17 @@ class PartialPCA:
         """
         delta = data - self.mean
 
-
         y1  = numpy.sum(
             numpy.reshape(delta, (delta.shape[0], 1, delta.shape[1]))*self.shape, axis=2
             )
 
         return y1
 
-def main( shape_path, image_path , output_path="partialfit_fit.npz"):
+def loadPCAFitter(shape_path):
+    mean, shape = getPCA( shape_path )
+    return PartialPCA(mean, shape)
+
+def main( shape_path, image_path , output="partialfit_fit.npz"):
     """
         Loads pca data and the image data as a zarr. Fits the data
     and then saves the resulting fit.
@@ -42,12 +45,11 @@ def main( shape_path, image_path , output_path="partialfit_fit.npz"):
     for s in data.shape[1:]:
         n = n*s
     rs = data.reshape((data.shape[0], n))
-    out = numpy.zeros((rs.shape[0], shape.shape[0]))
     ppca = PartialPCA(mean, shape)
     value = ppca.fit(rs)
     print(value.shape)
-    print("saving to: ", output_path)
-    numpy.savez(output_path, value)
+    print("saving to: ", output)
+    numpy.savez(output, numpy.array(value))
 
 if __name__=="__main__":
     main(sys.argv[1], sys.argv[2])

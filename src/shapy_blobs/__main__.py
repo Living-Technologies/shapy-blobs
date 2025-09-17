@@ -2,6 +2,7 @@
 
 
 import click
+import pathlib
 
 @click.group()
 def greeting():
@@ -40,7 +41,12 @@ def plot_fit( fit_file, regions):
     fit file into regions. Otherwise the whole dataset will be treated as one group.
     """
     from . import plot_fit
-    plot_fit.main(fit_file, regions)
+    p = pathlib.Path(fit_file)
+    if p.is_dir():
+        fit_files = [ i for i in p.glob("*.npz") ]
+        plot_fit.main(fit_files, regions)
+    else:
+        plot_fit.main([fit_file], regions)
 
 @greeting.command('component-images')
 @click.argument('pca_file', nargs=1, type=click.Path())

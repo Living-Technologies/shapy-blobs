@@ -17,18 +17,28 @@ def getHistogram( values ):
     return mid, hist
 
 
-def main( fit_file, regions=[] ):
-    loaded = numpy.load( open(fit_file, 'rb') )
-    for item in loaded:
-        print(item)
-    fits = loaded["arr_0"]
+def main( fit_files, regions=[] ):
 
+    n, m = (4, 4)
+    pyplot.style.use("dark_background")
+    fig, axes = pyplot.subplots( n, m)
+    fits = []
+    files = []
+    for fit_file in fit_files:
+
+        loaded = numpy.load( open(fit_file, 'rb') )
+        for item in loaded:
+            print(item)
+        fits.append(loaded["arr_0"])
+        files.append( fits[-1].shape[0] )
+        print("loaded shape", loaded["arr_0"].shape)
+    fits = numpy.concatenate(fits, axis=0)
+    print("final shape: ", fits.shape);
     pyplot.figure(0)
-
     plotMagnitude(fits)
 
     if len(regions)==0:
-        regions = [ fits.shape[0] ]
+        regions = files
     else:
         t0 = 0
         for tr in regions:
@@ -36,8 +46,6 @@ def main( fit_file, regions=[] ):
             t0 += tr
 
 
-    n, m = (4, 4)
-    fig, axes = pyplot.subplots( n, m)
     for i in range(n*m):
         j = i//m
         k = i%m
@@ -47,9 +55,9 @@ def main( fit_file, regions=[] ):
         for tr in regions:
             print(t0, tr)
             x, y = getHistogram(fits[t0:t0+tr, i])
-            axis.plot(x, y, ".", label="%s : %s, %s"%(i+1, t0, t0+tr))
+            axis.plot(x, y, ".-", label="%s : %s, %s"%(i+1, t0, t0+tr))
             t0 += tr
-            axis.legend()
+    axis.legend()
     pyplot.show()
 
 
