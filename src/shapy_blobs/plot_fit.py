@@ -32,7 +32,12 @@ def main( fit_files, regions=[] ):
         fits.append(loaded["arr_0"])
         files.append( fits[-1].shape[0] )
         print("loaded shape", loaded["arr_0"].shape)
+
     fits = numpy.concatenate(fits, axis=0)
+    for j, row in enumerate(fits):
+        if row[3] > 5:
+            print(j)
+
     print("final shape: ", fits.shape);
     pyplot.figure(0)
     plotMagnitude(fits)
@@ -57,6 +62,23 @@ def main( fit_files, regions=[] ):
             x, y = getHistogram(fits[t0:t0+tr, i])
             axis.plot(x, y, ".-", label="%s : %s, %s"%(i+1, t0, t0+tr))
             t0 += tr
+
+    axis.legend()
+
+    fig2, axes2 = pyplot.subplots( n, m)
+    for i in range(n*m):
+        j = i//m
+        k = i%m
+        axis = axes2[j, k]
+
+        t0 = 0
+        for tr in regions:
+            print(t0, tr)
+            y = fits[t0:t0+tr, 2*i]
+            x = fits[t0:t0+tr, 2*i + 1]
+            axis.plot(x, y, ".", label="%s : %s, %s"%(i+1, t0, t0+tr))
+            t0 += tr
+
     axis.legend()
     pyplot.show()
 

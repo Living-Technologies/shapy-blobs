@@ -32,12 +32,12 @@ def compile_values( fit_file, attribute_folder, output):
             lines = []
             with open(fname, 'r') as attrs:
                 lines = [line.split("\t") for line in attrs]
-
-            for row, line in zip(fits, lines):
+            nx = dex + len(lines)
+            for row, line in zip(fits[dex:nx], lines):
                 values = [frame, line[0], *line[4:7], *row[0:16]]
                 to_write = "\t".join( "%s"%v for v in values )
                 rf.write("%s\n"%to_write)
-
+            dex = nx
 
 if __name__=='__main__':
     greeting()

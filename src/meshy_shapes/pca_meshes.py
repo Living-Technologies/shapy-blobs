@@ -27,6 +27,7 @@ def loadMeshFile( mesh_file ):
             n_bytes = n_floats*8
             f_bytes = opend.read(n_bytes)
             if len(f_bytes) != n_bytes:
+                print("final mesh truncated!")
                 break
             positions = struct.unpack_from(">%sd"%n_floats, f_bytes, 0)
             if any( math.isnan(x) for x in positions ):
@@ -95,11 +96,40 @@ def saveModes(pca_file, quick_mesh_file, bmf_name, modes = 100):
     mesh = bmf.Mesh(fitter.mean, topo["connections"], topo["triangles"])
     track = bmf.Track("mean")
     track.addMesh( 0, mesh)
+    plus = bmf.Track("plus")
+    minus = bmf.Track("minus")
     for i in range(modes):
         mesh = bmf.Mesh(fitter.mean - fitter.shape[i], topo["connections"], topo["triangles"])
-        track.addMesh( 2*i + 1, mesh)
+        minus.addMesh( i, mesh)
         mesh = bmf.Mesh(fitter.mean + fitter.shape[i], topo["connections"], topo["triangles"])
-        track.addMesh( 2*i + 2, mesh)
+        plus.addMesh( i, mesh)
 
 
+    bmf.saveMeshTracks( [track, plus, minus], bmf_name)
+
+def extractMeshes( quick_mesh_file, bmf_name="extraction.bmf" ):
+    topo, data = loadMeshFile(quick_mesh_file)
+    print("loaded: ", data.shape[0])
+    dex = 0
+    suspect = range(64)
+    track = bmf.Track("mean")
+    for i in suspect:
+        mesh = bmf.Mesh(data[i], topo["connections"], topo["triangles"])
+        track.addMesh( dex, mesh)
+        dex += 1
+    bmf.saveMeshTracks( [track], bmf_name)
+
+def reconstructMeshes( quick_mesh_file, pca_file, fits_file, bmf_name="reconstructed.bmf", modes=8):
+    topo = loadTopology(quick_mesh_file)
+    fitter = loadPCAFitter(pca_file)
+    loaded = numpy.load( open(fits_file, 'rb') )
+    fits = loaded["arr_0"]
+    track = bmf.Track("reconstructed")
+    for m in range(64):
+        fit = fits[m]
+        construct = numpy.zeros( fitter.mean.shape ) + fitter.mean
+        for i in range(modes):
+            construct += fitter.shape[i]*fit[i]
+        mesh = bmf.Mesh(construct, topo["connections"], topo["triangles"])
+        track.addMesh(m, mesh)
     bmf.saveMeshTracks( [track], bmf_name)

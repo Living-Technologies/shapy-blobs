@@ -11,7 +11,7 @@ def greeting():
 @click.option('--components', default = None, help = "number of components saved", type = int)
 def pca_meshes( mesh_files, output, components):
     """
-        Loads IMAGE_FILES as zarr folders and performs a PCA on them.
+        Loads MESH_FILE as a quickmesh and performs finds the pca transform.
 
     """
     from . import pca_meshes
@@ -24,7 +24,7 @@ def pca_meshes( mesh_files, output, components):
 @click.option('--components', default = None, help = "number of components saved", type = int)
 def fit_meshes( pca_file, mesh_file, output, components):
     """
-        Loads IMAGE_FILES as zarr folders and performs a PCA on them.
+        Loads PCA_FILE to fit MESH_FILE quick meshes.
 
     """
     from . import pca_meshes
@@ -41,6 +41,26 @@ def save_modes( pca_file, mesh_file, output, modes):
     """
     from . import pca_meshes
     pca_meshes.saveModes(pca_file, mesh_file, output, modes)
+
+@greeting.command('extract-meshes')
+@click.argument('quickmesh', nargs=1, type=click.Path())
+def extract_meshes( quickmesh ):
+    """
+       Grab some meshes.
+    """
+    from . import pca_meshes
+    pca_meshes.extractMeshes(quickmesh)
+
+@greeting.command('reconstruct-meshes')
+@click.argument('quickmesh', nargs=1, type=click.Path())
+@click.argument('pca-file', nargs=1, type=click.Path())
+@click.argument('fits-file', nargs=1, type=click.Path())
+def reconstruct_meshes( quickmesh, pca_file, fits_file ):
+    """
+        Uses the provided quickmesh for topology, pca file for pca modes and
+    """
+    from . import pca_meshes
+    pca_meshes.reconstructMeshes(quickmesh, pca_file, fits_file)
 
 
 if __name__=='__main__':
